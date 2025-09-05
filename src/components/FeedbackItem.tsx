@@ -23,7 +23,7 @@ export default function FeedbackItem({
         <p>{company}</p>
         <p>{text}</p>
       </div>
-      <p>{daysAgo}d</p>
+      <p>{daysAgo === 0 ? "new" : `${daysAgo}d`}</p>
     </li>
   );
 }

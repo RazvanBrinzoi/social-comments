@@ -33,6 +33,7 @@ function App() {
 
     setData((prev) => {
       const newArray = prev ? [...prev, newItem] : [newItem];
+      localStorage.setItem("feedbackItems", JSON.stringify(newArray));
       return newArray;
     });
   };
