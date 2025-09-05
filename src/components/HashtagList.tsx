@@ -1,15 +1,21 @@
-export default function HashtagList() {
+type HashtagListProps = {
+  companyList: string[];
+  onHashtagClick: (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => void;
+};
+
+export default function HashtagList({
+  companyList,
+  onHashtagClick,
+}: HashtagListProps) {
   return (
     <ul className="hashtags">
-      <li>
-        <button>#Netflix</button>
-      </li>
-      <li>
-        <button>#Nike</button>
-      </li>
-      <li>
-        <button>#McDonald's</button>
-      </li>
+      {companyList.map((company) => (
+        <li key={company}>
+          <button onClick={(e) => onHashtagClick(e)}>#{company}</button>
+        </li>
+      ))}
     </ul>
   );
 }
