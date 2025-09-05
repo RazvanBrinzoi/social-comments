@@ -9,18 +9,24 @@ type UseFetchOptions = {
 };
 
 export function useFetch(options?: UseFetchOptions) {
-  const { delay = 1000, shouldFail = false } = options || {};
-
-  const [data, setData] = useState<Feedback[]>(feedbackData);
+  const [data, setData] = useState<Feedback[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+
+  const { delay = 1000, shouldFail = false } = options || {};
+  const stored = localStorage.getItem("feedbackItems");
 
   const fetchData = async () => {
     setIsLoading(true);
     setErrorMessage("");
     try {
-      const result = await fakeFetch(feedbackData, delay, shouldFail);
-      setData(result);
+      if (stored) {
+        const result = await fakeFetch(JSON.parse(stored), delay, shouldFail);
+        setData(result);
+      } else {
+        const result = await fakeFetch(feedbackData, delay, shouldFail);
+        setData(result);
+      }
     } catch (err) {
       setErrorMessage("Fetch error: " + err);
     } finally {
@@ -29,7 +35,7 @@ export function useFetch(options?: UseFetchOptions) {
   };
 
   useEffect(() => {
-    fetchData(); // fetch automat la mount
+    fetchData();
   }, []);
 
   return { data, setData, isLoading, errorMessage, fetchData };
