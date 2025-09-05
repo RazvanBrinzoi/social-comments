@@ -1,3 +1,4 @@
+import { useMemo, useState } from "react";
 import { useFetch } from "../hooks/useFetch";
 import type { Feedback } from "../lib/types";
 import Footer from "./Footer";
@@ -14,6 +15,27 @@ function App() {
     delay: 300,
     shouldFail: false,
   });
+
+  const companyList: string[] = Array.from(
+    new Set(feedbackItems.map((item) => item.company))
+  );
+
+  const [selectedCompany, setSelectedCompany] = useState("");
+  const filteredFeedbackItems = useMemo(
+    () =>
+      feedbackItems.filter(
+        (item) => item.company === selectedCompany || selectedCompany === ""
+      ),
+    [feedbackItems, selectedCompany]
+  );
+
+  const handleHashtagClick = (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    event.stopPropagation();
+    const company = event.currentTarget.textContent?.substring(1) || "";
+    setSelectedCompany(company === selectedCompany ? "" : company);
+  };
 
   const handleAddToList = (text: string) => {
     const companyName =
@@ -42,12 +64,15 @@ function App() {
     <div className="app">
       <Footer />
       <MainContainer
-        feedbackItems={feedbackItems}
+        feedbackItems={filteredFeedbackItems}
         isLoading={isLoading}
         errorMessage={errorMessage}
         onAddItem={handleAddToList}
       />
-      <HashtagList />
+      <HashtagList
+        onHashtagClick={handleHashtagClick}
+        companyList={companyList}
+      />
     </div>
   );
 }
