@@ -1,20 +1,13 @@
-import { useMemo, useState } from "react";
-import { useFetch } from "../hooks/useFetch";
+import { useEffect, useMemo, useState } from "react";
 import type { Feedback } from "../lib/types";
 import Footer from "./Footer";
 import HashtagList from "./HashtagList";
 import MainContainer from "./MainContainer";
+import { useFeedbackStore } from "../store/feedbackItemsStore";
 
 function App() {
-  const {
-    data: feedbackItems,
-    setData,
-    isLoading,
-    errorMessage,
-  } = useFetch({
-    delay: 300,
-    shouldFail: false,
-  });
+  const { feedbackItems, fetchFeedbackItems, isLoading, errorMessage } =
+    useFeedbackStore();
 
   const companyList: string[] = Array.from(
     new Set(feedbackItems.map((item) => item.company))
@@ -59,6 +52,10 @@ function App() {
       return newArray;
     });
   };
+
+  useEffect(() => {
+    fetchFeedbackItems();
+  }, []);
 
   return (
     <div className="app">
