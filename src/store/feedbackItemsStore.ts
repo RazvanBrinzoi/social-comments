@@ -3,7 +3,23 @@ import type { Feedback } from "../lib/types";
 import { fakeFetch } from "../utils/feedbackServices";
 import { feedbackData } from "../lib/constants";
 
-export const useFeedbackStore = create((set, get) => ({
+type FeedbackStore = {
+  feedbackItems: Feedback[];
+  selectedCompany: string;
+  isLoading: boolean;
+  errorMessage: string;
+  delay: number;
+  shouldFail: boolean;
+
+  //actions
+  fetchFeedbackItems: () => Promise<void>;
+  addItemToList: (text: string) => void;
+  filterFeedbackItems: () => Feedback[];
+  getCompanyList: () => string[];
+  selectCompany: (company: string) => void;
+};
+
+export const useFeedbackStore = create<FeedbackStore>((set, get) => ({
   feedbackItems: [],
   selectedCompany: "",
   isLoading: false,
@@ -58,7 +74,7 @@ export const useFeedbackStore = create((set, get) => ({
     );
   },
   getCompanyList: () => {
-    return new Set(get().feedbackItems.map((item) => item.company));
+    return Array.from(new Set(get().feedbackItems.map((item) => item.company)));
   },
   selectCompany: (company: string) => {
     set(() => ({ selectedCompany: company }));
