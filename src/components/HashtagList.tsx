@@ -1,19 +1,22 @@
-type HashtagListProps = {
-  companyList: string[];
-  onHashtagClick: (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => void;
-};
+import { useFeedbackStore } from "../store/feedbackItemsStore";
 
-export default function HashtagList({
-  companyList,
-  onHashtagClick,
-}: HashtagListProps) {
+export default function HashtagList() {
+  const { getCompanyList, selectedCompany, selectCompany } = useFeedbackStore();
+  const companyList = getCompanyList();
+
+  const handleHashtagClick = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.stopPropagation();
+    const targetCompany = e.currentTarget.textContent?.substring(1) || "";
+    selectCompany(targetCompany === selectedCompany ? "" : targetCompany);
+  };
+
   return (
     <ul className="hashtags">
       {companyList.map((company) => (
         <li key={company}>
-          <button onClick={(e) => onHashtagClick(e)}>#{company}</button>
+          <button onClick={handleHashtagClick}>#{company}</button>
         </li>
       ))}
     </ul>
