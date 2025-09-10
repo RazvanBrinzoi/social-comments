@@ -17,6 +17,7 @@ type FeedbackStore = {
   filterFeedbackItems: () => Feedback[];
   getCompanyList: () => string[];
   selectCompany: (company: string) => void;
+  manageUpVote: (id: number) => void;
 };
 
 export const useFeedbackStore = create<FeedbackStore>((set, get) => ({
@@ -69,14 +70,25 @@ export const useFeedbackStore = create<FeedbackStore>((set, get) => ({
   },
   filterFeedbackItems: () => {
     const { feedbackItems, selectedCompany } = get();
-    return feedbackItems.filter(
-      (item) => item.company === selectedCompany || selectedCompany === ""
-    );
+    return feedbackItems
+      .filter(
+        (item) => item.company === selectedCompany || selectedCompany === ""
+      )
+      .sort((a, b) => b.upvoteCount - a.upvoteCount);
   },
   getCompanyList: () => {
     return Array.from(new Set(get().feedbackItems.map((item) => item.company)));
   },
   selectCompany: (company: string) => {
     set(() => ({ selectedCompany: company }));
+  },
+  manageUpVote: (id: number) => {
+    set((state) => {
+      const updatedItems = state.feedbackItems.map((item) =>
+        item.id === id ? { ...item, upvoteCount: item.upvoteCount + 1 } : item
+      );
+      localStorage.setItem("feedbackItems", JSON.stringify(updatedItems));
+      return { feedbackItems: updatedItems };
+    });
   },
 }));

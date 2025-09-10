@@ -1,10 +1,12 @@
 import { TriangleUpIcon } from "@radix-ui/react-icons";
 import type { Feedback } from "../lib/types";
 import { useState } from "react";
+import { useFeedbackStore } from "../store/feedbackItemsStore";
 
 type FeedbackItemProps = Feedback;
 
 export default function FeedbackItem({
+  id,
   upvoteCount,
   badgeLetter,
   company,
@@ -12,7 +14,7 @@ export default function FeedbackItem({
   daysAgo,
 }: FeedbackItemProps) {
   const [open, setOpen] = useState(false);
-  const [upVote, setUpvote] = useState(upvoteCount);
+  const manageUpVote = useFeedbackStore((state) => state.manageUpVote);
 
   return (
     <li
@@ -26,11 +28,11 @@ export default function FeedbackItem({
         onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
           e.stopPropagation();
           e.currentTarget.disabled = true;
-          setUpvote(upVote + 1);
+          manageUpVote(id);
         }}
       >
         <TriangleUpIcon />
-        <span>{upVote}</span>
+        <span>{upvoteCount}</span>
       </button>
       <div>
         <p>{badgeLetter}</p>
