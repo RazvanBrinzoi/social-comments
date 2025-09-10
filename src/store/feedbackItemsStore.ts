@@ -43,12 +43,6 @@ export const useFeedbackStore = create((set, get) => ({
       text: text,
     };
 
-    // set((feedbackItems) => {
-    //   const newArray = feedbackItems ? [...feedbackItems, newItem] : [newItem];
-    //   localStorage.setItem("feedbackItems", JSON.stringify(newArray));
-    //   return newArray;
-    // });
-
     set((state) => {
       const newArray = [...state.feedbackItems, newItem];
       localStorage.setItem("feedbackItems", JSON.stringify(newArray));
